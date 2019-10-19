@@ -7,17 +7,20 @@
 
 library(tidyverse)
 
-primates <- read_csv("color_absorbance/primates.csv")
+primates <- read_csv("primates.csv",
+                     comment = "#")
 
+
+primates <- select(primates, -percent_divergence)
 # seq_divergence <- rnorm(9, 0.002, .0002)
 
 # Results used to generate the current percentages in the file.
-# 0.002061000 0.002032013 0.002263953 0.001811133 0.001926278 
-#0.002143840 0.002259887 0.001945377 0.001863878
+# seq_divergence <- c(0.002061000, 0.002032013, 0.002263953, 0.001811133, 0.001926278, 0.002143840, 0.002259887, 0.001945377, 0.001863878)
 
 # Not necessary to run again once suitable divergences estimated.
-primates$percent_divergence <- 
-  round((primates$average_age * seq_divergence) * 100, 1)
+primates <- primates %>% 
+  mutate(percent_divergence = average_age * seq_divergence * 100) %>% 
+  mutate(percent_divergence = round(percent_divergence, 1))
 
 
 base_plot <- 
