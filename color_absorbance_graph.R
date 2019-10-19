@@ -1,16 +1,37 @@
-#library(colourvision) No longer need.
-#library(ggplot2)
+
+# Code from this answer to my question
+# https://stackoverflow.com/a/58417825/3832941
+
+
+# Libraries ---------------------------------------------------------------
+#
 library(photobiology)
 library(grid)
 library(tidyverse)
 
 
+# Constants ---------------------------------------------------------------
+#
+# Filter some data to mimic traditional absorbance courves
+# without going all the to zero
+absorbance_minimum = 0.10
+
+spectrum_min <-  400  # For x-axis
+spectrum_max <- 650
+
+line_weight = 1  # For opsin curves in plot
+
+
+
+# Data manipulation -------------------------------------------------------
+
 # Data downloaded from http://www.cvrl.org/cones.htm
+# read.csv("http://www.cvrl.org/database/data/cones/linss10e_1.csv")
 wavelengths <- read_csv("linss10e_1.csv", 
                         col_names = TRUE)
 
-absorbance_minimum = 0.10
 
+# Separate the data to plot individual curves
 hum_blue <- wavelengths %>% 
   select(wavelength, blue) %>% 
   filter(blue >= absorbance_minimum)
@@ -23,6 +44,9 @@ hum_red <- wavelengths %>%
   select(wavelength, red) %>% 
   filter(red >= absorbance_minimum)
 
+## From colourvision package. No longer used but left for legacy.
+## colourvision loads X11 automatically, which crashed Rstudio when quit.
+
 # These use the photor() function from the colourvision package.
 # The package loads X11, which crashes the R session when quitting X11.
 
@@ -34,9 +58,6 @@ hum_red <- wavelengths %>%
 # 
 # hum_red <- photor(lambda.max = c(570), lambda = seq(460, 640, 1))
 # hum_red <- hum_red[hum_red$lambda.max570 >= absorbance_minimum,]
-
-spectrum_min <-  400
-spectrum_max <- 650
 
 # 10 added to maximum spectrum to shift the gradient enough
 # so the rightmost curve peaks in yellow
@@ -56,7 +77,12 @@ g <- rasterGrob(gradient,
                 height = unit(1, "npc"), 
                 interpolate = TRUE) 
 
-line_weight = 1
+
+
+# Plot --------------------------------------------------------------------
+# Probably rearrange to plot curves with and without long wavelengths.
+# Provide students without so they add long wavelength. Answer key / slides
+# will have all three curves.
 
 ggplot(data = NULL, aes(x = wavelength)) +
   annotation_custom(g, xmin = 400, xmax = 700, ymin = -Inf, ymax = Inf) +
