@@ -1,3 +1,8 @@
+# Other files
+*.pdf
+*.png
+*.xlsx
+
 # History files
 .Rhistory
 .Rapp.history
