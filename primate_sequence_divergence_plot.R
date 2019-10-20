@@ -34,10 +34,15 @@ base_plot <-
                      breaks = seq(10, 90, 5),
                      expand = c(0.01, 0.2)) +
   labs(x = "Genetic difference (%)",
-       y = "Time since divergence (mya)")
+       y = "Time since common ancestor (\UE05D\UE069\UE051)") + # Libertine small caps for MYA.
+  theme(text = element_text(size = 12,
+                            family = "Linux Libertine O"))
 
-ggsave(filename = "base_primate_divergence_plot.png",
-       plot = base_plot)
+ggsave(filename = "~/Pictures/teach/163/activities/primate_divergence_plot_blank.png",
+       plot = base_plot,
+       width = 6,
+       height = 4,
+       units = "in")
 
 final_plot <- 
   base_plot +
@@ -46,6 +51,9 @@ final_plot <-
               color = "gray50") + 
   geom_point(size = 3)
 
-ggsave(filename = "final_primate_divergence_plot.png",
-       plot = final_plot)
+ggsave(filename = "~/Pictures/teach/163/activities/primate_divergence_plot_key.png",
+       plot = final_plot,
+       width = 6,
+       height = 4,
+       units = "in")
 
