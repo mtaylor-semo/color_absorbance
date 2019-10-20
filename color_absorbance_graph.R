@@ -5,7 +5,7 @@
 
 # Libraries ---------------------------------------------------------------
 #
-library(photobiology)
+#library(photobiology)
 library(grid)
 library(tidyverse)
 
@@ -79,62 +79,146 @@ g <- rasterGrob(gradient,
 
 
 
-# Plot --------------------------------------------------------------------
-# Probably rearrange to plot curves with and without long wavelengths.
-# Provide students without so they add long wavelength. Answer key / slides
-# will have all three curves.
+# Spectrum plots ----------------------------------------------------------
+# These are plots with the background spectrums, then adding curves.
 
-ggplot(data = NULL, aes(x = wavelength)) +
+base_plot <- 
+  ggplot(data = NULL, aes(x = wavelength)) +
   annotation_custom(g, xmin = 400, xmax = 700, ymin = -Inf, ymax = Inf) +
-  geom_vline(xintercept = c(450, 500, 550, 600), color = "gray75", size = 0.25) +
-  geom_line(data = hum_blue, 
-            aes(y = blue), 
-            color = "white", 
-            size = line_weight) +
-  geom_line(data = hum_green, 
-            aes(y = green), 
-            color = "white",
-            size = line_weight) +
-  geom_line(data = hum_red, 
-            aes(y = red), 
-            color = "white",
-            size = line_weight) +
   scale_x_continuous(limits = c(spectrum_min, spectrum_max), 
                      breaks = seq(spectrum_min, spectrum_max, 10), 
                      expand = c(0.01, 0)) +
-#  scale_y_continuous(breaks = seq(0, 1, 0.1)) +
   theme(panel.background = element_blank(), 
         panel.border = element_blank(),
         panel.grid = element_blank()) +
   theme(axis.text.y = element_blank(),
         axis.ticks.y = element_blank()) +
   labs(x = "Wavelength (nm)",
-       y = "Relative absorbance") +
-  annotate("text", 
-           x = 448, 
-           y = 1.05, 
-           label = "Short", 
+       y = NULL) +
+  theme(text = element_text(family = "Linux Biolinum O",
+                            size = 12))
+
+ggsave(filename = "~/Pictures/teach/163/activities/spectrum_base_plot.png",
+       plot = base_plot,
+       height = 4,
+       width = 6,
+       units = "in")
+
+dichromat_plot <- base_plot +
+  geom_vline(xintercept = c(450, 500, 550, 600), color = "gray75", size = 0.25) +
+  geom_line(data = hum_blue,
+            aes(y = blue),
+            color = "white",
+            size = line_weight) +
+  geom_line(data = hum_green,
+            aes(y = green),
+            color = "white",
+            size = line_weight) +
+  ylab("Relative sensitivity") +
+  annotate("text",
+           x = 448,
+           y = 1.05,
+           label = "Short",
            color = "white",
-           size = 7,
+           size = 4,
            family = "Linux Biolinum O",
            fontface = "bold") +
-  annotate("text", 
-           x = 541, 
-           y = 1.05, 
-           label = "Medium", 
+  annotate("text",
+           x = 541,
+           y = 1.05,
+           label = "Medium",
            color = "black",
-           size = 7,
+           size = 4,
+           family = "Linux Biolinum O",
+           fontface = "bold")
+
+trichromat_plot <- dichromat_plot + 
+  geom_line(data = hum_red,
+            aes(y = red),
+            color = "white",
+            size = line_weight) +
+  annotate("text",
+           x = 569,
+           y = 1.05,
+           label = "Long",
+           color = "black",
+           size = 4,
+           family = "Linux Biolinum O",
+           fontface = "bold")
+
+ggsave(filename = "~/Pictures/teach/163/activities/dichromat_plot.png", 
+       plot = dichromat_plot,
+       height = 4,
+       width = 6,
+       units = "in")
+
+ggsave(filename = "~/Pictures/teach/163/activities/trichromat_plot.png",
+       plot = trichromat_plot,
+       height = 4,
+       width = 6,
+       units = "in")
+
+# Plots without spectrum --------------------------------------------------
+#
+# These plots do not have the spectrum for the student handouts.
+
+dichromat_plain_plot <- 
+  ggplot(data = NULL, aes(x = wavelength)) +
+  geom_vline(xintercept = c(450, 500, 550, 600), color = "gray75", size = 0.25) +
+  geom_line(data = hum_blue,
+            aes(y = blue),
+            size = line_weight) +
+  geom_line(data = hum_green,
+            aes(y = green),
+            size = line_weight) +
+  scale_x_continuous(limits = c(spectrum_min, spectrum_max), 
+                     breaks = seq(spectrum_min, spectrum_max, 10), 
+                     expand = c(0.01, 0)) +
+  theme_bw() +
+  theme(panel.grid = element_blank()) +
+  theme(axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()) +
+  labs(x = "Wavelength (nm)",
+       y = "Relative sensitivity") +
+  annotate("text",
+           x = 448,
+           y = 1.05,
+           label = "Short",
+           size = 4,
            family = "Linux Biolinum O",
            fontface = "bold") +
+  annotate("text",
+           x = 541,
+           y = 1.05,
+           label = "Medium",
+           color = "black",
+           size = 4,
+           family = "Linux Biolinum O",
+           fontface = "bold") +
+  theme(text = element_text(family = "Linux Biolinum O",
+                            size = 12))
+
+trichromat_plain_plot <- dichromat_plain_plot +
+  geom_line(data = hum_red,
+            aes(y = red),
+            size = line_weight) +
   annotate("text", 
            x = 569, 
            y = 1.05, 
            label = "Long", 
            color = "black", 
-           size = 7,
+           size = 4,
            family = "Linux Biolinum O",
-           fontface = "bold") +
-  theme(text = element_text(family = "Linux Biolinum O",
-                            size = 16))
+           fontface = "bold")
+  
+ggsave(filename = "~/pictures/teach/163/activities/dichromat_plain_plot.png",
+       plot = dichromat_plain_plot,
+       width = 6,
+       height = 4,
+       units = "in")
 
-
+ggsave(filename = "~/pictures/teach/163/activities/trichromat_plain_plot.png",
+       plot = trichromat_plain_plot,
+       width = 6,
+       height = 4,
+       units = "in")
