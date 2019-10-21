@@ -10,8 +10,6 @@ library(tidyverse)
 primates <- read_csv("primates.csv",
                      comment = "#")
 
-
-primates <- select(primates, -percent_divergence)
 # seq_divergence <- rnorm(9, 0.002, .0002)
 
 # Results used to generate the current percentages in the file.
@@ -22,7 +20,8 @@ primates <- primates %>%
   mutate(percent_divergence = average_age * seq_divergence * 100) %>% 
   mutate(percent_divergence = round(percent_divergence, 1))
 
-
+# Average age * 0.2 yields the percent divergence given in Table 1 of the exercise.
+# percent_divergence 
 base_plot <- 
   ggplot(primates,
        aes(x = percent_divergence, y = average_age)) +
